@@ -27,7 +27,6 @@ use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\inventory\CraftingGrid;
 use pocketmine\inventory\CraftingRecipe;
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
 use pocketmine\network\mcpe\protocol\ContainerClosePacket;
 use pocketmine\network\mcpe\protocol\types\ContainerIds;
 use pocketmine\Player;
