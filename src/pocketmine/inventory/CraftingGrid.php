@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\inventory;
 
+use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\Player;
 
 class CraftingGrid extends BaseInventory{
@@ -63,5 +65,50 @@ class CraftingGrid extends BaseInventory{
 	 */
 	public function getHolder(){
 		return $this->holder;
+	}
+
+	/**
+	 * Returns a 2D array of items in this crafting grid, trimmed of empty rows and columns. Used for recipe matching.
+	 *
+	 * @return Item[][]
+	 */
+	public function getTrimmedItemMap() : array{
+		$minX = PHP_INT_MAX;
+		$maxX = 0;
+
+		$minY = PHP_INT_MAX;
+		$maxY = 0;
+
+		$empty = true;
+
+		$gridSize = $this->getGridWidth();
+		for($y = 0; $y < $gridSize; ++$y){
+			for($x = 0; $x < $gridSize; ++$x){
+				if(!$this->isSlotEmpty($y * $gridSize + $x)){
+					$minX = min($minX, $x);
+					$maxX = max($maxX, $x);
+
+					$minY = min($minY, $y);
+					$maxY = max($maxY, $y);
+
+					$empty = false;
+				}
+			}
+		}
+
+		if($empty){
+			return [];
+		}
+
+		$air = ItemFactory::get(Item::AIR, 0, 0);
+		/** @var Item[][] $reindexed */
+		$reindexed = array_fill(0, $maxY - $minY + 1, array_fill(0, $maxX - $minX + 1, $air));
+		foreach($reindexed as $y => $row){
+			foreach($row as $x => $item){
+				$reindexed[$y][$x] = $this->getItem(($y + $minY) * $gridSize + ($x + $minX));
+			}
+		}
+
+		return $reindexed;
 	}
 }

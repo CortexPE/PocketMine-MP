@@ -48,12 +48,7 @@ class CraftItemEvent extends Event implements Cancellable{
 	 * @return Recipe
 	 */
 	public function getRecipe() : Recipe{
-		$recipe = $this->transaction->getRecipe();
-		if($recipe === null){
-			throw new \RuntimeException("This shouldn't be called if the transaction can't be executed");
-		}
-
-		return $recipe;
+		return $this->transaction->getRecipe();
 	}
 
 	/**
